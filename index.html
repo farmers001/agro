@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>이팜장터 희석배율 계산기</title>
+      <style>
+        body {
+            background-color: white;
+            color: black;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background-color: red;
+            color: white;
+            padding: 10px;
+        }
+
+        h3{
+            margin-top: 0;
+            background-color: gray;
+            color: black;
+            padding: 5px;
+            text-align: left;
+            margin-bottom: 0;
+        }
+        h5 {
+            margin-top: 0;
+            background-color: gray;
+            color: white;
+            padding: 5px;
+            text-align: left;
+            margin-bottom: 0;
+        }
+         h6 {
+            margin-top: 0;
+            background-color: white;
+            padding: 5px;
+            text-align: left;
+            margin-bottom: 5;
+        }
+
+        label {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        input[type="number"],
+        select {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        #error-msg {
+            margin-top: 20px;
+            color: red;
+            font-weight: bold;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-weight: bold;
+            margin-bottom: 10px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <h1>이팜장터 희석배율 계산기</h1>
+    <h3>계산기 사용법 안내</h3>
+    <h5>1. 희석배율을 입력하세요.</h5>
+    <h5>2. 물과 원액, 둘 중 하나만 입력하세요.</h5>
+    <h5>3. 단위를 확인하고 확인버튼을 누르세요.</h5>
+    <h6></h6>
+
+    <label for="dilution-factor">희석배율을 입력하세요:</label>
+    <input type="number" id="dilution-factor" min="1" step="any">
+      
+
+  <br>
+      <label for="water-input">물:</label>
+    <input type="number" id="water-input" min="0" step="any">
+    <select id="water-unit">
+        <option value="ml">ml</option>
+        <option value="L">L</option>
+    </select>
+    <br>
+    <label for="concentrate-input">원액:</label>
+    <input type="number" id="concentrate-input" min="0" step="any">
+    <select id="concentrate-unit">
+        <option value="ml">ml</option>
+        <option value="L">L</option>
+    </select>
+    <br>
+    <button onclick="calculateDilution()">확인</button>
+    <p id="error-msg"></p>
+
+    <div id="result"></div>
+
+    <script>
+        function calculateDilution() {
+            var dilutionFactorInput = document.getElementById("dilution-factor");
+            var dilutionFactor = parseFloat(dilutionFactorInput.value);
+    
+            if (isNaN(dilutionFactor) || dilutionFactor <= 0) {
+                alert("희석배율은 양수여야 합니다.");
+                return;
+            }
+    
+            var waterInput = document.getElementById("water-input");
+            var waterUnit = document.getElementById("water-unit").value;
+            var concentrateInput = document.getElementById("concentrate-input");
+            var concentrateUnit = document.getElementById("concentrate-unit").value;
+    
+            if (waterInput.value !== "" && concentrateInput.value !== "") {
+                document.getElementById("error-msg").textContent = "물과 원액 중 한 가지만 입력하세요.";
+                return;
+            } else {
+                document.getElementById("error-msg").textContent = "";
+            }
+    
+            if (waterInput.value === "") {
+                var concentrateVolume = parseFloat(concentrateInput.value);
+                if (concentrateUnit === "L") {
+                    concentrateVolume *= 1000; // Convert concentrate volume to milliliters if unit is L
+                }
+                var waterVolume = concentrateVolume * (dilutionFactor - 1);
+                waterInput.value = waterVolume.toFixed(2);
+                document.getElementById("water-unit").value = "ml";
+                concentrateInput.value = 0;
+            } else {
+                var waterVolume = parseFloat(waterInput.value);
+                if (waterUnit === "L") {
+                    waterVolume *= 1000; // Convert water volume to milliliters if unit is L
+                }
+                var concentrateVolume = waterVolume / (dilutionFactor - 1);
+                concentrateInput.value = concentrateVolume.toFixed(2);
+                document.getElementById("concentrate-unit").value = "ml";
+                waterInput.value = 0;
+            }
+    
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "물: " + waterInput.value + waterUnit + "<br>원액: " + concentrateInput.value + concentrateUnit;
+        }
+    </script>
+    <a href="http://fmckoreamall.com/">
+        <img src="C:\Users\jung1\OneDrive\바탕 화면\coding\agrocal\FMC.jpg" alt="FMC">
+    </a>
+    
+</body>
+
+</html>
